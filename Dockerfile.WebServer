@@ -1,0 +1,18 @@
+FROM node:10.16.0
+
+WORKDIR /app
+
+COPY ./package.json .
+COPY ./package-lock.json .
+
+RUN npm ci
+
+COPY ./tsconfig.json .
+COPY ./baseTSConfig.json .
+# COPY ./global.d.ts .
+
+COPY ./source/app ./source/app
+
+RUN npx tsc
+
+CMD node out/app/WebServers.js

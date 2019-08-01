@@ -1,3 +1,6 @@
+// tslint:disable-next-line:no-reference
+/// <reference path="./global.d.ts" />
+
 import './../utils/requireOverride';
 import { BaseServer } from '~server/lib/BaseServer';
 import { LocalStorage } from "node-localstorage";
