@@ -3,7 +3,7 @@ import { readFile, access, constants } from 'graceful-fs';
 import { path as rootPath } from 'app-root-path';
 import { resolve } from 'path';
 import { parse } from 'ini';
-import { merge } from 'lodash';
+import { merge, isInteger } from 'lodash';
 /**
  * Manages the configuration on server side. See BDOConfigManager for mode
  * information
@@ -70,6 +70,21 @@ export class ConfigManager extends BDOConfigManager {
      * @memberof ConfigManager
      */
     protected async load(config: string): Promise<IndexStructure> {
+        const useEnvironmentVariablesForConfig = true;
+        if (useEnvironmentVariablesForConfig) {
+            const { TIMEOUTS_CONFIG_CACHE = NaN } = process.env;
+
+            if (!isInteger(+TIMEOUTS_CONFIG_CACHE)) {
+                throw new Error("'TIMEOUTS_CONFIG_CACHE' must be an integer.");
+            }
+
+            return {
+                timeouts: {
+                    configCache: +TIMEOUTS_CONFIG_CACHE
+                }
+            };
+        }
+
         const temp = {};
 
         let environment = 'server';
