@@ -9,10 +9,8 @@ RUN npm ci
 
 COPY ./tsconfig.json .
 COPY ./baseTSConfig.json .
-# COPY ./global.d.ts .
 
 COPY ./source/app ./source/app
+COPY ./source/utils ./source/utils
 
 RUN npx tsc
-
-CMD node out/app/WebServers.js

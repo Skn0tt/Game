@@ -1,6 +1,6 @@
 /* tslint:disable:no-console*/
 import * as colors from 'colors';
-import { createWriteStream } from 'graceful-fs';
+import { appendFile, mkdir } from 'graceful-fs';
 import { resolve } from 'path';
 import { path as rootPath } from 'app-root-path';
 import { baseConstructor } from '~bdo/utils/decorators';
@@ -65,17 +65,14 @@ export class Logger extends BDOLogger {
      * @memberof Logger
      */
     protected writeToFile(logLevel: logLevels, message: any): void {
+        const dir = resolve(rootPath, 'var', 'logs');
         const path = resolve(rootPath, 'var', 'logs', <string>this.logFile);
         const data = `${this.getHeader(logLevel, 'file')} ${message}\n`;
-        const stream = createWriteStream(path, {
-            encoding: 'utf-8',
-            flags: 'a',
-            autoClose: true
-        });
 
-        stream.write(data, (error) => {
-            if (!error) return stream.end();
-            console.error(error);
+        mkdir(dir, { recursive: true }, () => {
+            appendFile(path, data, { encoding: "utf8" }, () => {
+
+            });
         });
     }
 }

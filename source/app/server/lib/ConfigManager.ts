@@ -3,7 +3,7 @@ import { readFile, access, constants } from 'graceful-fs';
 import { path as rootPath } from 'app-root-path';
 import { resolve } from 'path';
 import { parse } from 'ini';
-import { merge, isInteger } from 'lodash';
+import { merge, isString } from 'lodash';
 /**
  * Manages the configuration on server side. See BDOConfigManager for mode
  * information
@@ -72,17 +72,51 @@ export class ConfigManager extends BDOConfigManager {
     protected async load(config: string): Promise<IndexStructure> {
         const useEnvironmentVariablesForConfig = true;
         if (useEnvironmentVariablesForConfig) {
-            const { TIMEOUTS_CONFIG_CACHE = NaN } = process.env;
+            const { TIMEOUTS_CONFIG_CACHE = null } = process.env;
 
-            if (!isInteger(+TIMEOUTS_CONFIG_CACHE)) {
-                throw new Error("'TIMEOUTS_CONFIG_CACHE' must be an integer.");
+            if (!isString(TIMEOUTS_CONFIG_CACHE)) {
+                throw new Error("'TIMEOUTS_CONFIG_CACHE' must be a string.");
             }
 
-            return {
-                timeouts: {
-                    configCache: +TIMEOUTS_CONFIG_CACHE
+            const mockConfig: Record<string, any> = {
+                config: {
+                    session: {
+                        hashFunction: "sha256",
+                        digest: "ascii",
+                        resave: true,
+                        saveUninitialized: true,
+                        secureCookie: "auto",
+                        httpOnly: false,
+                        maxAge: "6h",
+                        prefix: "sessions",
+                        disableTTL: false,
+                        logErrors: true
+                    },
+                    timeouts: {
+                        configCache: TIMEOUTS_CONFIG_CACHE
+                    }
+                },
+                passwords: {
+                    sessionSecretSeed: "ej1nemß312klj"
+                },
+                ports: {
+                    redis: 6379
+                },
+                databases: {
+                    redis: {
+                        sessions: 1,
+                        host: "redis"
+                    }
+                },
+                paths: {
+                    staticFiles: "out",
+                    routes: "out/app/server/routes/",
+                    resolvers: "out/app/server/api/",
+                    apiEntryPoint: "api"
                 }
             };
+
+            return mockConfig[config];
         }
 
         const temp = {};

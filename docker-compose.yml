@@ -5,10 +5,12 @@ services:
   gameserver:
     build:
       context: .
-      dockerfile: ./Dockerfile.GameServer
+      dockerfile: ./Dockerfile
+    entrypoint: "node /app/out/app/GameServer.js"
     environment:
       NODE_ENV: "development"
       PORT: 3000
+      TIMEOUTS_CONFIG_CACHE: 6h
     ports:
       - 3000:3000
     depends_on:
@@ -18,10 +20,12 @@ services:
   webserver:
     build:
       context: .
-      dockerfile: ./Dockerfile.WebServer
+      dockerfile: ./Dockerfile
+    entrypoint: "node /app/out/app/WebServer.js"
     environment:
       NODE_ENV: "development"
       PORT: 3001
+      TIMEOUTS_CONFIG_CACHE: 6h
     ports:
       - 3001:3001
     depends_on:

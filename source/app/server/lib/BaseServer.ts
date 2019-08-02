@@ -195,7 +195,7 @@ export abstract class BaseServer {
                 }
             }, {
                 store: new RedisStore({
-                    host: 'localhost',
+                    host: databases.redis.host,
                     port: ports.redis,
                     prefix: `${config.session.prefix}:`,
                     disableTTL: config.session.disableTTL,

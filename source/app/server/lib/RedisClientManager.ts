@@ -166,7 +166,7 @@ export class RedisClientManager {
         const defaultClientSettings = {
             retryStrategy: this.retryStrategy.bind(this),
             reconnectOnError: this.reconnectOnError.bind(this),
-            host: 'localhost',
+            host: config[1].redis.host,
             port: <number>config[0].redis,
             db: <number>config[1].redis.default
         };
